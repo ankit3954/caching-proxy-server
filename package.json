@@ -4,11 +4,15 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "caching-proxy" : ".dist/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx --watch src/index.ts"
+    "dev": "tsx --watch src/index.ts",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
