@@ -1,0 +1,7 @@
+const checkInMap = () => {
+
+}
+
+const storeInMap = () => {
+    
+}

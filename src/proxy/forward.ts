@@ -11,7 +11,7 @@ export const forwardToOrigin = async (requestDetails: RequestDetails, origin: st
     try {
         const { path, method, headers, body } = requestDetails;
         const originUrl = `${origin}${path}`
-        console.log(originUrl)
+        // console.log(originUrl)
 
         const response = await axios({
             url: originUrl,

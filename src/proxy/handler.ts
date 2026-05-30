@@ -1,6 +1,7 @@
 import express, { type Request, type Response } from "express";
 import axios, { type Method } from "axios";
 import { forwardToOrigin } from "./forward.js";
+import { keyGenerator } from "../cache/key.js";
 
 const HOP_BY_HOP_HEADERS = new Set([
     "connection",
@@ -35,6 +36,7 @@ export const handleAllRequests = async (req: Request, res: Response, origin: str
             body: req.body
         }
 
+        keyGenerator(requestDetails.method, requestDetails.path);
         const response = await forwardToOrigin(requestDetails, origin);
 
         if (!response)
