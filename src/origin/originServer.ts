@@ -13,6 +13,8 @@ app.get("/users", (req, res) => {
     { id: 1, name: "Ankit" },
     { id: 2, name: "Rahul" },
   ]);
+
+    // res.status(200).send("<h1>Hello</h1>");
 });
 
 /**

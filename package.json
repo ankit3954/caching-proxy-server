@@ -12,7 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx --watch src/index.ts",
-    "origin": "tsx src/origin/originServer.ts",
+    "origin": "tsx --watch src/origin/originServer.ts",
     "build": "tsc"
   },
   "devDependencies": {
