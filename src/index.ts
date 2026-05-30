@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import { parseArgument } from "./cli/parseArgs.js";
-import { startServer } from "./server/proxyServer.js";
+import { startServer } from "./proxy/server.js";
 
 try {
     const {port, origin} = parseArgument(process.argv);
