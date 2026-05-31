@@ -1,7 +1,6 @@
 const sortQueryParams = (queryString: string) => {
     const params = new URLSearchParams(queryString);
 
-    // Convert to array, sort manually (deterministic)
     const sortedParams = Array.from(params.entries()).sort(([aKey], [bKey]) =>
         aKey.localeCompare(bKey)
     );

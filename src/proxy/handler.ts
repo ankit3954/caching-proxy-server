@@ -2,6 +2,7 @@ import express, { type Request, type Response } from "express";
 import axios, { type Method } from "axios";
 import { forwardToOrigin } from "./forward.js";
 import { keyGenerator } from "../cache/key.js";
+import { getCacheResponse } from "../cache/store.js";
 
 const HOP_BY_HOP_HEADERS = new Set([
     "connection",
@@ -36,7 +37,16 @@ export const handleAllRequests = async (req: Request, res: Response, origin: str
             body: req.body
         }
 
-        keyGenerator(requestDetails.method, requestDetails.path);
+        const cacheKey = keyGenerator(requestDetails.method, requestDetails.path);
+
+        const cachedResponse = getCacheResponse(cacheKey);
+
+        //logic to forward cached response if found
+        if(cachedResponse){
+
+        }else{
+
+        }
         const response = await forwardToOrigin(requestDetails, origin);
 
         if (!response)
