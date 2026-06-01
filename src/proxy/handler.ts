@@ -2,7 +2,7 @@ import express, { type Request, type Response } from "express";
 import axios, { type Method } from "axios";
 import { forwardToOrigin } from "./forward.js";
 import { keyGenerator } from "../cache/key.js";
-import { getCacheResponse } from "../cache/store.js";
+import { getCacheResponse, storeCacheResponse } from "../cache/store.js";
 
 const HOP_BY_HOP_HEADERS = new Set([
     "connection",
@@ -16,8 +16,9 @@ const HOP_BY_HOP_HEADERS = new Set([
     "content-length"
 ])
 
+const CACHE_METHODS = ["GET", "HEAD"];
 
-const filterHeaders = (headers: any) => {
+const filterHeaders = (headers: any): Record<string, any> => {
     const filtered: Record<string, any> = {};
 
     for (const key in headers) {
@@ -25,6 +26,8 @@ const filterHeaders = (headers: any) => {
             filtered[key] = headers[key];
         }
     }
+
+    return filtered;
 };
 
 
@@ -37,16 +40,26 @@ export const handleAllRequests = async (req: Request, res: Response, origin: str
             body: req.body
         }
 
-        const cacheKey = keyGenerator(requestDetails.method, requestDetails.path);
+        if (CACHE_METHODS.includes(requestDetails.method)) {
+            const cacheKey = keyGenerator(requestDetails.method, requestDetails.path);
 
-        const cachedResponse = getCacheResponse(cacheKey);
-
-        //logic to forward cached response if found
-        if(cachedResponse){
-
-        }else{
-
+            const cachedResponse = getCacheResponse(cacheKey);
+            //logic to forward cached response if found
+            if (cachedResponse) {
+                const { status, headers, data } = cachedResponse;
+                headers["x-cache"] = "HIT";
+                res.status(status);
+                res.set(headers);
+                const contentType = String(headers["content-type"] || "");
+                if (contentType.includes("application/json")) {
+                    return res.json(data);
+                } else {
+                    return res.send(data);
+                }
+            }
         }
+
+
         const response = await forwardToOrigin(requestDetails, origin);
 
         if (!response)
@@ -58,8 +71,15 @@ export const handleAllRequests = async (req: Request, res: Response, origin: str
 
         const contentType = String(headers["content-type"] || "");
 
+        if (CACHE_METHODS.includes(requestDetails.method)) {
+            const cacheKey = keyGenerator(requestDetails.method, requestDetails.path);
+            storeCacheResponse(cacheKey, status, filteredHeaders, data)
+            filteredHeaders["x-cache"] = "MISS";
+        }
+
         res.status(status);
         res.set(filteredHeaders);
+
 
         if (contentType.includes("application/json")) {
             res.json(data);

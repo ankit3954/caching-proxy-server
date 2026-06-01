@@ -1,7 +1,7 @@
 export interface CacheEntry {
     status: number;
     headers: Record<string, any>;
-    body: any;
+    data: any;
     createdAt: number;
 }
 
@@ -9,7 +9,7 @@ const TTL = 5 * 60 * 1000; // 5 minutes
 
 const cache = new Map<string, CacheEntry>();
 
-export const getCacheResponse = (key: string) : CacheEntry | null => {
+export const getCacheResponse = (key: string): CacheEntry | null => {
     const entry = cache.get(key);
 
     if (!entry) {
@@ -26,6 +26,16 @@ export const getCacheResponse = (key: string) : CacheEntry | null => {
     return entry;
 }
 
-const storeCacheResponse = () => {
-
+export const storeCacheResponse = (
+    key: string,
+    status: number,
+    headers: Record<string, any>,
+    data: any
+): void => {
+     cache.set(key, {
+        status,
+        headers,
+        data,
+        createdAt: Date.now()
+    });
 }
