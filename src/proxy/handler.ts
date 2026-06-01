@@ -40,55 +40,77 @@ export const handleAllRequests = async (req: Request, res: Response, origin: str
             body: req.body
         }
 
-        if (CACHE_METHODS.includes(requestDetails.method)) {
-            const cacheKey = keyGenerator(requestDetails.method, requestDetails.path);
+        const isCacheable = CACHE_METHODS.includes(requestDetails.method);
 
+        const cacheKey = isCacheable
+            ? keyGenerator(requestDetails.method, requestDetails.path)
+            : null;
+
+        if (isCacheable && cacheKey) {
             const cachedResponse = getCacheResponse(cacheKey);
-            //logic to forward cached response if found
+        
             if (cachedResponse) {
+
                 const { status, headers, data } = cachedResponse;
-                headers["x-cache"] = "HIT";
-                res.status(status);
-                res.set(headers);
+                const responseHeaders = {
+                    ...headers,
+                    "x-cache": "HIT"
+                };
                 const contentType = String(headers["content-type"] || "");
+
+                res.status(status);
+                res.set(responseHeaders);
+
                 if (contentType.includes("application/json")) {
                     return res.json(data);
-                } else {
-                    return res.send(data);
                 }
+
+                return res.send(data);
             }
         }
 
 
         const response = await forwardToOrigin(requestDetails, origin);
 
-        if (!response)
+        if (!response) {
             return res.status(502).send("No response received from origin");
-
-        const { headers, data, status } = response;
-
-        const filteredHeaders = filterHeaders(headers);
-
-        const contentType = String(headers["content-type"] || "");
-
-        if (CACHE_METHODS.includes(requestDetails.method)) {
-            const cacheKey = keyGenerator(requestDetails.method, requestDetails.path);
-            storeCacheResponse(cacheKey, status, filteredHeaders, data)
-            filteredHeaders["x-cache"] = "MISS";
         }
 
+        const { headers, data, status } = response;
+        const filteredHeaders = filterHeaders(headers);
+
+        if (
+            isCacheable &&
+            cacheKey &&
+            status >= 200 &&
+            status < 300
+        ) {
+            storeCacheResponse(
+                cacheKey,
+                status,
+                filteredHeaders,
+                data
+            );
+        }
+
+        const responseHeaders = {
+            ...filteredHeaders,
+            "x-cache": "MISS"
+        };
+        const contentType = String(headers["content-type"] || "");
+
         res.status(status);
-        res.set(filteredHeaders);
+        res.set(responseHeaders);
 
 
         if (contentType.includes("application/json")) {
-            res.json(data);
-        } else {
-            res.send(data);
-        }
+            return res.json(data);
+        } 
+
+        return res.send(data);
+        
     } catch (error) {
         console.error("Proxy error:", error);
-
         return res.status(502).send("Bad Gateway");
     }
 

@@ -11,7 +11,6 @@ const cache = new Map<string, CacheEntry>();
 
 export const getCacheResponse = (key: string): CacheEntry | null => {
     const entry = cache.get(key);
-
     if (!entry) {
         return null;
     }
@@ -32,10 +31,15 @@ export const storeCacheResponse = (
     headers: Record<string, any>,
     data: any
 ): void => {
+    try {
      cache.set(key, {
         status,
         headers,
         data,
         createdAt: Date.now()
     });
+    } catch (error) {
+        console.error(error)
+    }
+   
 }

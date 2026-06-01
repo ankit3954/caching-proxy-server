@@ -2,7 +2,6 @@ import { Command } from "commander";
 
 export const parseArgument = (args: string[]) => {
     const program = new Command();
-    console.log(args)
     program
         .version("1.0.0")
         .description("This is proxy caching server")
@@ -11,7 +10,6 @@ export const parseArgument = (args: string[]) => {
         .parse(args);
 
     const options = program.opts();
-    console.log(options)
     const {port, origin} = options;
 
     return {
