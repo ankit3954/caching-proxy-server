@@ -16,7 +16,7 @@ export const keyGenerator = (method: string, fullUrl: string) => {
     const [path, queryString] = fullUrl.split('?');
 
     if (!queryString) {
-        console.log("Sorted URL", `${method}:${path}`)
+        // console.log("Sorted URL", `${method}:${path}`)
         return `${method}:${path}`;
     }
 

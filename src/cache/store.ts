@@ -10,6 +10,7 @@ const TTL = 5 * 60 * 1000; // 5 minutes
 const cache = new Map<string, CacheEntry>();
 
 export const getCacheResponse = (key: string): CacheEntry | null => {
+    // console.log(cache)
     const entry = cache.get(key);
     if (!entry) {
         return null;

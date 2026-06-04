@@ -1,4 +1,5 @@
 import axios, { type Method } from "axios";
+import { filterHeaders } from "./handler.js";
 
 interface RequestDetails {
     method: string;
@@ -15,7 +16,7 @@ export const forwardToOrigin = async (requestDetails: RequestDetails, origin: st
         const response = await axios({
             url: originUrl,
             method: method as Method,
-            headers: headers, // Prevents server hanging bugs
+            headers: filterHeaders(headers), // Prevents server hanging bugs
             data: body,
         });
 

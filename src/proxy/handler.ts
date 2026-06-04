@@ -3,6 +3,7 @@ import axios, { type Method } from "axios";
 import { forwardToOrigin } from "./forward.js";
 import { keyGenerator } from "../cache/key.js";
 import { getCacheResponse, storeCacheResponse } from "../cache/store.js";
+import { getOrCreateInFlight } from "../cache/inFlight.js";
 
 const HOP_BY_HOP_HEADERS = new Set([
     "connection",
@@ -13,12 +14,13 @@ const HOP_BY_HOP_HEADERS = new Set([
     "trailers",
     "transfer-encoding",
     "upgrade",
-    "content-length"
+    "content-length",
+    "host"
 ])
 
 const CACHE_METHODS = ["GET", "HEAD"];
 
-const filterHeaders = (headers: any): Record<string, any> => {
+export const filterHeaders = (headers: any): Record<string, any> => {
     const filtered: Record<string, any> = {};
 
     for (const key in headers) {
@@ -69,39 +71,55 @@ export const handleAllRequests = async (req: Request, res: Response, origin: str
             }
         }
 
+        const response = await getOrCreateInFlight(
+            cacheKey || `${requestDetails.method}:${requestDetails.path}`,
+            async () => {
+                const originResponse = await forwardToOrigin(
+                    requestDetails,
+                    origin
+                );
 
-        const response = await forwardToOrigin(requestDetails, origin);
+                if (!originResponse) return null;
+
+                const { status, data, headers } = originResponse;
+
+                const cleanedHeaders = filterHeaders(headers);
+
+                if (
+                    isCacheable &&
+                    cacheKey &&
+                    status >= 200 &&
+                    status < 300
+                ) {
+                    storeCacheResponse(
+                        cacheKey,
+                        status,
+                        cleanedHeaders,
+                        data
+                    );
+                }
+
+                return {
+                    status,
+                    headers: cleanedHeaders,
+                    data,
+                };
+            }
+        );
 
         if (!response) {
             return res.status(502).send("No response received from origin");
         }
 
         const { headers, data, status } = response;
-        const filteredHeaders = filterHeaders(headers);
-
-        if (
-            isCacheable &&
-            cacheKey &&
-            status >= 200 &&
-            status < 300
-        ) {
-            storeCacheResponse(
-                cacheKey,
-                status,
-                filteredHeaders,
-                data
-            );
-        }
-
         const responseHeaders = {
-            ...filteredHeaders,
+            ...headers,
             "x-cache": "MISS"
         };
         const contentType = String(headers["content-type"] || "");
 
         res.status(status);
         res.set(responseHeaders);
-
 
         if (contentType.includes("application/json")) {
             return res.json(data);
@@ -113,6 +131,4 @@ export const handleAllRequests = async (req: Request, res: Response, origin: str
         console.error("Proxy error:", error);
         return res.status(502).send("Bad Gateway");
     }
-
-
 }
