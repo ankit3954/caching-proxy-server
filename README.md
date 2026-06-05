@@ -3,8 +3,8 @@
 A high-performance **Node.js CLI reverse proxy tool** featuring in-memory caching (TTL) and request deduplication (`inFlight` mechanism). Designed to optimize API performance, reduce redundant upstream requests, and gracefully handle spikes in concurrent traffic.
 
 ---
-**[Project URL](https://www.npmjs.com/package/http-cache-proxy-cli)**
-
+**[Project URL](https://roadmap.sh/projects/caching-server)**
+**[NPM PACKAGE URL](https://www.npmjs.com/package/http-cache-proxy-cli)**
 ## 🚀 Features
 
 - ⚡ **Reverse Proxy Server:** Built native on Node.js.
