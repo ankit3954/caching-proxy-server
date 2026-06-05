@@ -1,5 +1,5 @@
 {
-  "name": "caching-proxy",
+  "name": "http-cache-proxy-cli",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
