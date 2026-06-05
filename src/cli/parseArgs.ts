@@ -7,14 +7,16 @@ export const parseArgument = (args: string[]) => {
         .description("This is proxy caching server")
         .option("-p , --port <value>", "Caching proxy server port")
         .option("-o ,  --origin <value>", "Origin Server URL")
+        .option("-t , --ttl <value>", "Time To Live in mins")
         .parse(args);
 
     const options = program.opts();
-    const {port, origin} = options;
+    const {port, origin, ttl} = options;
 
     return {
         port,
-        origin
+        origin,
+        ttl
     }
 }
 

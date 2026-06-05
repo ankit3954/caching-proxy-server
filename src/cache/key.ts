@@ -16,7 +16,6 @@ export const keyGenerator = (method: string, fullUrl: string) => {
     const [path, queryString] = fullUrl.split('?');
 
     if (!queryString) {
-        // console.log("Sorted URL", `${method}:${path}`)
         return `${method}:${path}`;
     }
 
@@ -24,7 +23,6 @@ export const keyGenerator = (method: string, fullUrl: string) => {
 
     const sortedURL = sortedQueryString ? `${path}:${sortedQueryString}`
         : path;
-    console.log("Sorted URL", `${method}:${sortedURL}`)
 
     return `${method}:${sortedURL}`;
 }

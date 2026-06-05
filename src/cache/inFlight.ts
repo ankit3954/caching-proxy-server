@@ -17,6 +17,5 @@ export const getOrCreateInFlight = async <T>(
     })();
 
     inFlightMap.set(key, promise);
-    console.log("INFLIGHT-------", inFlightMap)
     return promise;
 };

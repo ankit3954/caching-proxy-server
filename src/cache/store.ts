@@ -1,3 +1,5 @@
+import { parseArgument } from "../cli/parseArgs.js";
+
 export interface CacheEntry {
     status: number;
     headers: Record<string, any>;
@@ -5,12 +7,12 @@ export interface CacheEntry {
     createdAt: number;
 }
 
-const TTL = 5 * 60 * 1000; // 5 minutes
+const TTL = parseArgument(process.argv).ttl * 60 * 1000;  //5 * 60 * 1000; // 5 minutes
+
 
 const cache = new Map<string, CacheEntry>();
 
 export const getCacheResponse = (key: string): CacheEntry | null => {
-    // console.log(cache)
     const entry = cache.get(key);
     if (!entry) {
         return null;
