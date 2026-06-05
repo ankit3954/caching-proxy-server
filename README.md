@@ -52,6 +52,7 @@ npx caching-proxy --port 3000 --origin http://example.com
 | :--- | :--- | :--- |
 | `--port` | Port for the proxy server to listen on | `3000` |
 | `--origin` | Target upstream origin server URL | `http://localhost:4000` |
+| `--ttl` | Time to Live limit in mins | `5` |
 | `--help` | Show the help menu and usage guide | — |
 | `--version` | Display the current installed version | — |
 
