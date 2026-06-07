@@ -3,7 +3,8 @@
 A high-performance **Node.js CLI reverse proxy tool** featuring in-memory caching (TTL) and request deduplication (`inFlight` mechanism). Designed to optimize API performance, reduce redundant upstream requests, and gracefully handle spikes in concurrent traffic.
 
 ---
-
+**[Project URL](https://roadmap.sh/projects/caching-server)**
+**[NPM PACKAGE URL](https://www.npmjs.com/package/http-cache-proxy-cli)**
 ## 🚀 Features
 
 - ⚡ **Reverse Proxy Server:** Built native on Node.js.
@@ -52,6 +53,7 @@ npx caching-proxy --port 3000 --origin http://example.com
 | :--- | :--- | :--- |
 | `--port` | Port for the proxy server to listen on | `3000` |
 | `--origin` | Target upstream origin server URL | `http://localhost:4000` |
+| `--ttl` | Time to Live limit in mins | `5` |
 | `--help` | Show the help menu and usage guide | — |
 | `--version` | Display the current installed version | — |
 
@@ -122,4 +124,12 @@ This project serves as a practical implementation of fundamental backend system 
 - Upstream server resource preservation under heavy traffic loads.
 
 ---
+
+## 👤 Author
+
+**Ankit Karn** – *Backend Developer*
+
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ankit3954)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ankitkarn3954/)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:ankitkarn.11184@gmail.com)
 
