@@ -1,5 +1,4 @@
-import express, { type Request, type Response } from "express";
-import axios, { type Method } from "axios";
+import { type Request, type Response } from "express";
 import { forwardToOrigin } from "./forward.js";
 import { keyGenerator } from "../cache/key.js";
 import { getCacheResponse, storeCacheResponse } from "../cache/store.js";
