@@ -10,3 +10,6 @@ try {
 } catch (error) {
     console.error("App has an error", error)
 }
+
+
+//working on streaming response
